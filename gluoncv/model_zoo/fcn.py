@@ -45,11 +45,13 @@ class FCN(SegBaseModel):
         super(FCN, self).__init__(nclass, aux, backbone, ctx=ctx, base_size=base_size,
                                   crop_size=crop_size, pretrained_base=pretrained_base, **kwargs)
         with self.name_scope():
-            self.head = _FCNHead(2048, nclass, **kwargs)
+            c4_num_features = list(self.layer4.collect_params().values())[-1].shape[0]
+            self.head = _FCNHead(c4_num_features, nclass, **kwargs)
             self.head.initialize(ctx=ctx)
             self.head.collect_params().setattr('lr_mult', 10)
             if self.aux:
-                self.auxlayer = _FCNHead(1024, nclass, **kwargs)
+                c3_num_features = list(self.layer3.collect_params().values())[-1].shape[0]
+                self.auxlayer = _FCNHead(c3_num_features, nclass, **kwargs)
                 self.auxlayer.initialize(ctx=ctx)
                 self.auxlayer.collect_params().setattr('lr_mult', 10)
 
