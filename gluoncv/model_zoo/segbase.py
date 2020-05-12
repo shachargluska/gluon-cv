@@ -67,12 +67,12 @@ class SegBaseModel(HybridBlock):
     """
     # pylint : disable=arguments-differ
     def __init__(self, nclass, aux, backbone='resnet50', height=None, width=None,
-                 base_size=520, crop_size=480, pretrained_base=True, **kwargs):
+                 base_size=520, crop_size=480, pretrained_base=True, dilated=True, **kwargs):
         super(SegBaseModel, self).__init__()
         self.aux = aux
         self.nclass = nclass
         with self.name_scope():
-            pretrained = get_backbone(backbone, pretrained=pretrained_base, dilated=True, **kwargs)
+            pretrained = get_backbone(backbone, pretrained=pretrained_base, dilated=dilated, **kwargs)
             self.conv1 = pretrained.conv1
             self.bn1 = pretrained.bn1
             self.relu = pretrained.relu
